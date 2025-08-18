@@ -14,8 +14,8 @@ export const uploadVideo = async (req, res) => {
       return res.status(400).json({ message: "Only MP4 allowed" });
     }
 
-    if (videoFile.size < 10 * 1024 * 1024 || videoFile.size > 50 * 1024 * 1024) {
-      return res.status(400).json({ message: "File must be 10–50 MB" });
+    if (videoFile.size < 20 * 1024 * 1024 || videoFile.size > 100 * 1024 * 1024) {
+      return res.status(400).json({ message: "File must be 20–100 MB" });
     }
 
     const stream = cloudinary.uploader.upload_stream(
