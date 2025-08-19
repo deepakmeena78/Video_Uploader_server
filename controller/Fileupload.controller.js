@@ -2,6 +2,9 @@ import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 
 // Upload video
+import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
+
 export const uploadVideo = async (req, res) => {
   try {
     if (!req.files || !req.files.video) {
@@ -10,8 +13,8 @@ export const uploadVideo = async (req, res) => {
 
     const videoFile = req.files.video;
 
-    if (videoFile.mimetype !== "video/mp4") {
-      return res.status(400).json({ message: "Only MP4 allowed" });
+    if (!videoFile.mimetype.startsWith("video/")) {
+      return res.status(400).json({ message: "Only video files are allowed" });
     }
 
     if (videoFile.size < 20 * 1024 * 1024 || videoFile.size > 100 * 1024 * 1024) {
@@ -28,12 +31,17 @@ export const uploadVideo = async (req, res) => {
           console.error("Cloudinary error:", err);
           return res.status(500).json({ message: "Upload failed", error: err.message });
         }
-        fs.unlinkSync(videoFile.tempFilePath);
 
-        res.json({
+        if (videoFile.tempFilePath && fs.existsSync(videoFile.tempFilePath)) {
+          fs.unlinkSync(videoFile.tempFilePath);
+        }
+
+        return res.json({
           url: result.secure_url,
           public_id: result.public_id,
           created_at: result.created_at,
+          format: result.format,
+          duration: result.duration,
         });
       }
     );
@@ -44,6 +52,7 @@ export const uploadVideo = async (req, res) => {
     res.status(500).json({ message: "Upload failed", error: err.message });
   }
 };
+
 
 
 // Get all uploaded videos
