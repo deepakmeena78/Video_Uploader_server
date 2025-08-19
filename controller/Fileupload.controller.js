@@ -1,10 +1,6 @@
 import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 
-// Upload video
-import fs from "fs";
-import { v2 as cloudinary } from "cloudinary";
-
 export const uploadVideo = async (req, res) => {
   try {
     if (!req.files || !req.files.video) {
